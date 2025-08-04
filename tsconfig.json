@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2024",
+    "module": "ESNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "types": ["vite/client"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["cyble", "node_modules", "dist", ".dev.ts"]
+}
