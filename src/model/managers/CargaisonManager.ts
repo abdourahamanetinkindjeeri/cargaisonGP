@@ -23,4 +23,7 @@ export class CargaisonManager {
   listerProduits(): Produit[] {
     return this.produits;
   }
+  reset(): void {
+    this.cargaisons = [];
+  }
 }
