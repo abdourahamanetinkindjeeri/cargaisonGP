@@ -12,8 +12,6 @@ export class ProduitManager implements ProduitAddInterface {
   }
 
   listerProduits(): void {
-    console.log(`Cool length : (${this.produits.length})`);
-
     this.produits.forEach((produit, index) => {
       console.log(`Produit ${index + 1}: ${produit.info()}`);
     });

@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "ES2022", // ou "ESNext"
+    "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "Node",
     "strict": true,
     "esModuleInterop": true,
-    "outDir": "./dist",
-    "types": ["vite/client"]
+    "outDir": "./dist"
+    // "types": ["vite/client"]
   },
   "include": ["src/**/*"],
   "exclude": ["cyble", "node_modules", "dist", ".dev.ts"]

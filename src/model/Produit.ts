@@ -11,6 +11,7 @@ export abstract class Produit {
 
   // getLibelle = () => this.libelle;
   getPoids = () => this.poids;
+  getLibelle = () => this.libelle;
 
   // setLibelle(libelle: string): void {
   //   this.libelle = libelle;

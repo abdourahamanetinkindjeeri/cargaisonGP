@@ -12,7 +12,6 @@ export class Routiere extends Cargaison {
     let frais = 0;
 
     if (produit instanceof Alimentaire) {
-      frais = 5000;
       return produit.getPoids() * this.distance * priceAlimentaire + frais;
     }
 

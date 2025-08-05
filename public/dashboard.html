@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GP Cargaison - Dashboard</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #2980b9;
+        --dark-color: #2c3e50;
+        --light-color: #ecf0f1;
+        --danger-color: #e74c3c;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: #333;
+      }
+
+      .navbar {
+        background-color: var(--dark-color);
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+      }
+
+      .nav-links li a {
+        color: white;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        margin: 0 0.5rem;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+
+      .nav-links li a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .menu-toggle {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: none;
+      }
+
+      .sidebar {
+        background-color: white;
+        width: 250px;
+        height: calc(100vh - 60px);
+        position: fixed;
+        top: 60px;
+        left: 0;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        z-index: 100;
+      }
+
+      .sidebar a {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        color: #555;
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+
+      .sidebar a i {
+        margin-right: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .sidebar a:hover {
+        background-color: var(--light-color);
+        color: var(--primary-color);
+      }
+
+      .sidebar a.active {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .container {
+        margin-left: 250px;
+        padding: 2rem;
+        min-height: calc(100vh - 60px);
+      }
+
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .dashboard-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark-color);
+      }
+
+      .card-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .card-footer {
+        font-size: 0.9rem;
+        color: #777;
+      }
+
+      .card-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+      }
+
+      .card-icon.blue {
+        background-color: var(--primary-color);
+      }
+
+      .card-icon.green {
+        background-color: var(--success-color);
+      }
+
+      .card-icon.orange {
+        background-color: var(--warning-color);
+      }
+
+      .resultats-container {
+        background-color: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .resultats-container h2 {
+        margin-bottom: 1.5rem;
+        color: var(--dark-color);
+      }
+
+      .cargaison {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .cargaison h2 {
+        color: var(--dark-color);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .cargaison p {
+        margin-bottom: 0.5rem;
+      }
+
+      .cargaison strong {
+        color: var(--dark-color);
+      }
+
+      .produits {
+        margin: 1rem 0;
+        padding: 1rem;
+        background-color: white;
+        border-radius: 4px;
+        border: 1px solid #eee;
+      }
+
+      .produit {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .produit:last-child {
+        border-bottom: none;
+      }
+
+      .erreur {
+        border-left-color: var(--danger-color);
+        background-color: #fef0f0;
+      }
+
+      .btn {
+        padding: 0.6rem 1.2rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--secondary-color);
+      }
+
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 2rem;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 600px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .modal-header h2 {
+        color: var(--dark-color);
+      }
+
+      .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #777;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark-color);
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 992px) {
+        .dashboard-cards {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+        }
+
+        .menu-toggle {
+          display: block;
+        }
+
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.sidebar-open {
+          transform: translateX(0);
+        }
+
+        .container {
+          margin-left: 0;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .dashboard-cards {
+          grid-template-columns: 1fr;
+        }
+
+        .modal-content {
+          width: 95%;
+          margin: 2% auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo">GP Cargaison</div>
+      <ul class="nav-links">
+        <li><a href="#">Accueil</a></li>
+        <li><a href="#">Produits</a></li>
+        <li><a href="#">Cargaisons</a></li>
+        <li><a href="#">Rapports</a></li>
+        <li><a href="#">Paramètres</a></li>
+      </ul>
+      <button class="menu-toggle" aria-label="Toggle menu">
+        <i class="bx bx-menu"></i>
+      </button>
+    </nav>
+
+    <aside class="sidebar">
+      <a href="#" class="active"
+        ><i class="bx bx-home"></i><span>Dashboard</span></a
+      >
+      <a href="#" id="open-add-product"
+        ><i class="bx bx-package"></i><span>Ajouter un produit</span></a
+      >
+      <a href="#" id="open-add-cargaison"
+        ><i class="bx bxs-truck"></i><span>Ajouter une cargaison</span></a
+      >
+      <a href="#"
+        ><i class="bx bx-bar-chart-alt-2"></i><span>Statistiques</span></a
+      >
+      <a href="#"><i class="bx bx-log-out"></i><span>Déconnexion</span></a>
+    </aside>
+
+    <main class="container">
+      <div class="dashboard-header">
+        <h1>Bienvenue sur le Dashboard GP Cargaison</h1>
+        <button class="btn btn-primary" id="run-tests">
+          Exécuter les tests
+        </button>
+      </div>
+
+      <div class="dashboard-cards">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Cargaisons routières</div>
+            <div class="card-icon blue">
+              <i class="bx bx-car"></i>
+            </div>
+          </div>
+          <div class="card-value" id="routiere-count">0</div>
+          <div class="card-footer">+0 cette semaine</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Cargaisons maritimes</div>
+            <div class="card-icon green">
+              <i class="bx bx-ship"></i>
+            </div>
+          </div>
+          <div class="card-value" id="maritime-count">0</div>
+          <div class="card-footer">+0 ce mois-ci</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Cargaisons aériennes</div>
+            <div class="card-icon orange">
+              <i class="bx bx-plane"></i>
+            </div>
+          </div>
+          <div class="card-value" id="aerienne-count">0</div>
+          <div class="card-footer">+0 aujourd'hui</div>
+        </div>
+      </div>
+
+      <div class="resultats-container">
+        <h2>Résultats des tests de cargaison</h2>
+        <div id="resultats"></div>
+      </div>
+    </main>
+
+    <!-- Modal pour ajouter une cargaison -->
+    <div id="modal-cargaison" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Ajouter une nouvelle cargaison</h2>
+          <button id="close-modal-cargaison" class="close-modal">
+            &times;
+          </button>
+        </div>
+        <form id="cargaison-form">
+          <div class="form-group">
+            <label for="cargaison-type">Type de cargaison</label>
+            <select id="cargaison-type" required>
+              <option value="">Sélectionnez un type</option>
+              <option value="Routiere">Routière</option>
+              <option value="Maritime">Maritime</option>
+              <option value="Aerienne">Aérienne</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="distance">Distance (km)</label>
+            <input
+              type="number"
+              id="distance"
+              required
+              min="1"
+              placeholder="Entrez la distance en km"
+            />
+          </div>
+          <div class="form-group">
+            <label for="produits-cargaison"
+              >Produits (sélection multiple)</label
+            >
+            <select id="produits-cargaison" multiple style="height: 150px">
+              <!-- Les options seront ajoutées dynamiquement -->
+            </select>
+          </div>
+          <div class="form-actions">
+            <button type="button" id="cancel-modal-cargaison" class="btn">
+              Annuler
+            </button>
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal pour ajouter un produit -->
+    <div id="modal-produit" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Ajouter un nouveau produit</h2>
+          <button id="close-modal-produit" class="close-modal">&times;</button>
+        </div>
+        <form id="produit-form">
+          <div class="form-group">
+            <label for="produit-type">Type de produit</label>
+            <select id="produit-type" required>
+              <option value="">Sélectionnez un type</option>
+              <option value="Alimentaire">Alimentaire</option>
+              <option value="Fragile">Fragile</option>
+              <option value="Incassable">Incassable</option>
+              <option value="Chimique">Chimique</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="libelle">Libellé</label>
+            <input
+              type="text"
+              id="libelle"
+              required
+              placeholder="Entrez le nom du produit"
+            />
+          </div>
+          <div class="form-group">
+            <label for="poids">Poids (kg)</label>
+            <input
+              type="number"
+              id="poids"
+              required
+              min="0.1"
+              step="0.1"
+              placeholder="Entrez le poids en kg"
+            />
+          </div>
+          <div
+            class="form-group"
+            id="niveau-danger-container"
+            style="display: none"
+          >
+            <label for="niveau-danger">Niveau de danger (1-10)</label>
+            <input
+              type="number"
+              id="niveau-danger"
+              min="1"
+              max="10"
+              placeholder="Entrez le niveau de danger"
+            />
+          </div>
+          <div class="form-actions">
+            <button type="button" id="cancel-modal-produit" class="btn">
+              Annuler
+            </button>
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module">
+      // Import des classes
+      import { Aerienne } from "./model/Aerienne.js";
+      import { Alimentaire } from "./model/Alimentaire.js";
+      import { Cargaison } from "./model/Cargaison.js";
+      import { Chimique } from "./model/Chimique.js";
+      import { Fragile } from "./model/Fragile.js";
+      import { Incassable } from "./model/Incassable.js";
+      import { Maritine } from "./model/Maritime.js";
+      import { Produit } from "./model/Produit.js";
+      import { Routiere } from "./model/Routiere.js";
+      import { CargaisonManager } from "./model/managers/CargaisonManager.js";
+      import { ProduitManager } from "./model/managers/ProduitManager.js";
+
+      // Initialisation des managers
+      const cargaisonManager = new CargaisonManager();
+      const produitManager = new ProduitManager();
+
+      // === Données de test ===
+      const produits10 = [
+        new Alimentaire({ libelle: "Riz", poids: 5 }),
+        new Alimentaire({ libelle: "Oignons", poids: 3 }),
+        new Fragile({ libelle: "Blinde", poids: 2 }),
+        new Fragile({ libelle: "Macbook pro", poids: 10 }),
+        new Fragile({ libelle: "Ampoules", poids: 0.5 }),
+        new Fragile({ libelle: "Vaisselle", poids: 2 }),
+        new Incassable({ libelle: "Marteau", poids: 1 }),
+        new Incassable({ libelle: "Clé anglaise", poids: 1 }),
+        new Alimentaire({ libelle: "Pomme de terre", poids: 4 }),
+        new Incassable({ libelle: "Pile pour pondeuse", poids: 10 }),
+      ];
+
+      const produits9 = [
+        new Alimentaire({ libelle: "Bananes", poids: 2 }),
+        new Alimentaire({ libelle: "Tomates", poids: 1 }),
+        new Fragile({ libelle: "Téléviseur", poids: 5 }),
+        new Chimique({ libelle: "Détergent", poids: 2 }, 6),
+        new Chimique({ libelle: "Ammoniac", poids: 1 }, 1),
+        new Fragile({ libelle: "Ordinateur portable", poids: 3 }),
+        new Incassable({ libelle: "Pelle", poids: 2 }),
+        new Incassable({ libelle: "Tournevis", poids: 0.5 }),
+        new Alimentaire({ libelle: "Carottes", poids: 2 }),
+      ];
+
+      const produits8 = [
+        new Alimentaire({ libelle: "Pain", poids: 1 }),
+        new Incassable({ libelle: "Fer", poids: 30 }),
+        new Fragile({ libelle: "Verres à vin", poids: 1 }),
+        new Incassable({ libelle: "Scie", poids: 1 }),
+        new Alimentaire({ libelle: "Yaourt", poids: 0.5 }),
+        new Fragile({ libelle: "Ecran Macbook", poids: 1.5 }),
+        new Fragile({ libelle: "Lampe en verre", poids: 2 }),
+        new Incassable({ libelle: "Pince", poids: 0.7 }),
+      ];
+
+      // Ajout des produits de test au manager
+      produits10.forEach((p) => produitManager.ajouterProduit(p));
+      produits9.forEach((p) => produitManager.ajouterProduit(p));
+      produits8.forEach((p) => produitManager.ajouterProduit(p));
+
+      // === Fonctions d'affichage ===
+      function afficherCargaisonDansDOM(description, cargaison, valeurTotale) {
+        const resultatsDiv = document.getElementById("resultats");
+        const div = document.createElement("div");
+        div.className = "cargaison";
+
+        const produitsHTML = cargaison
+          .getProduits()
+          .map(
+            (p) =>
+              `<div class="produit">${p.getLibelle()} – ${p.getPoids()} kg</div>`
+          )
+          .join("");
+
+        div.innerHTML = `
+                <h2>${description}</h2>
+                <p><strong>Type :</strong> ${cargaison.constructor.name}</p>
+                <p><strong>Distance :</strong> ${cargaison.getDistance()} km</p>
+                <p><strong>Nombre de produits :</strong> ${
+                  cargaison.getProduits().length
+                }</p>
+                <div class="produits">${produitsHTML}</div>
+                <p><strong>Total :</strong> ${valeurTotale.toLocaleString(
+                  "fr-FR",
+                  {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }
+                )} FCFA</p>
+            `;
+
+        resultatsDiv.appendChild(div);
+      }
+
+      function afficherErreurDansDOM(description, message) {
+        const resultatsDiv = document.getElementById("resultats");
+        const div = document.createElement("div");
+        div.className = "cargaison erreur";
+        div.innerHTML = `<h2>${description}</h2><p>${message}</p>`;
+        resultatsDiv.appendChild(div);
+      }
+
+      function testCargaison(produits, description, CargaisonType) {
+        try {
+          const cargaison = new CargaisonType(300, produits);
+          const valeurTotale = cargaison.sommeTotale(cargaison);
+          cargaisonManager.ajouterCargaison(cargaison);
+          afficherCargaisonDansDOM(description, cargaison, valeurTotale);
+          mettreAJourCompteurs();
+        } catch (e) {
+          afficherErreurDansDOM(description, e.message);
+        }
+      }
+
+      function mettreAJourCompteurs() {
+        const cargaisons = cargaisonManager.listerCargaisons();
+        const routiereCount = cargaisons.filter(
+          (c) => c.constructor.name === "Routiere"
+        ).length;
+        const maritimeCount = cargaisons.filter(
+          (c) => c.constructor.name === "Maritine"
+        ).length;
+        const aerienneCount = cargaisons.filter(
+          (c) => c.constructor.name === "Aerienne"
+        ).length;
+
+        document.getElementById("routiere-count").textContent = routiereCount;
+        document.getElementById("maritime-count").textContent = maritimeCount;
+        document.getElementById("aerienne-count").textContent = aerienneCount;
+      }
+
+      function mettreAJourListeProduits() {
+        const select = document.getElementById("produits-cargaison");
+        select.innerHTML = "";
+
+        produitManager.getProduits().forEach((produit) => {
+          const option = document.createElement("option");
+          option.value = produitManager.getProduits().indexOf(produit);
+          option.textContent = `${produit.getLibelle()} (${produit.getPoids()} kg) - ${
+            produit.constructor.name
+          }`;
+          select.appendChild(option);
+        });
+      }
+
+      // === Gestion des événements ===
+      document.getElementById("run-tests").addEventListener("click", () => {
+        // Effacer les résultats précédents
+        document.getElementById("resultats").innerHTML = "";
+
+        // Exécuter les tests
+        testCargaison(produits10, "Test avec 10 produits valides", Routiere);
+        testCargaison([produits10[0]], "Test avec 1 produit valide", Routiere);
+        testCargaison(
+          produits9,
+          "Test avec 9 produits (doit échouer)",
+          Maritine
+        );
+        testCargaison(
+          produits8,
+          "Test avec 8 produits (doit échouer)",
+          Aerienne
+        );
+      });
+
+      // Modal cargaison
+      const modalCargaison = document.getElementById("modal-cargaison");
+      document
+        .getElementById("open-add-cargaison")
+        .addEventListener("click", (e) => {
+          e.preventDefault();
+          mettreAJourListeProduits();
+          modalCargaison.style.display = "block";
+        });
+
+      document
+        .getElementById("close-modal-cargaison")
+        .addEventListener("click", () => {
+          modalCargaison.style.display = "none";
+        });
+
+      document
+        .getElementById("cancel-modal-cargaison")
+        .addEventListener("click", () => {
+          modalCargaison.style.display = "none";
+        });
+
+      // Modal produit
+      const modalProduit = document.getElementById("modal-produit");
+      document
+        .getElementById("open-add-product")
+        .addEventListener("click", (e) => {
+          e.preventDefault();
+          modalProduit.style.display = "block";
+        });
+
+      document
+        .getElementById("close-modal-produit")
+        .addEventListener("click", () => {
+          modalProduit.style.display = "none";
+        });
+
+      document
+        .getElementById("cancel-modal-produit")
+        .addEventListener("click", () => {
+          modalProduit.style.display = "none";
+        });
+
+      // Gestion du type de produit
+      document
+        .getElementById("produit-type")
+        .addEventListener("change", (e) => {
+          const niveauDangerContainer = document.getElementById(
+            "niveau-danger-container"
+          );
+          niveauDangerContainer.style.display =
+            e.target.value === "Chimique" ? "block" : "none";
+        });
+
+      // Soumission du formulaire de produit
+      document
+        .getElementById("produit-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const type = document.getElementById("produit-type").value;
+          const libelle = document.getElementById("libelle").value;
+          const poids = parseFloat(document.getElementById("poids").value);
+          const niveauDanger = document.getElementById("niveau-danger").value
+            ? parseInt(document.getElementById("niveau-danger").value)
+            : null;
+
+          let produit;
+          switch (type) {
+            case "Alimentaire":
+              produit = new Alimentaire({ libelle, poids });
+              break;
+            case "Fragile":
+              produit = new Fragile({ libelle, poids });
+              break;
+            case "Incassable":
+              produit = new Incassable({ libelle, poids });
+              break;
+            case "Chimique":
+              produit = new Chimique({ libelle, poids }, niveauDanger);
+              break;
+            default:
+              alert("Type de produit invalide");
+              return;
+          }
+
+          produitManager.ajouterProduit(produit);
+          modalProduit.style.display = "none";
+          alert("Produit ajouté avec succès !");
+        });
+
+      // Soumission du formulaire de cargaison
+      document
+        .getElementById("cargaison-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const type = document.getElementById("cargaison-type").value;
+          const distance = parseInt(document.getElementById("distance").value);
+          const produitsSelect = document.getElementById("produits-cargaison");
+          const selectedOptions = Array.from(produitsSelect.selectedOptions);
+
+          if (selectedOptions.length === 0) {
+            alert("Veuillez sélectionner au moins un produit");
+            return;
+          }
+
+          const produits = selectedOptions.map(
+            (option) => produitManager.getProduits()[option.value]
+          );
+
+          let cargaison;
+          try {
+            switch (type) {
+              case "Routiere":
+                cargaison = new Routiere(distance, produits);
+                break;
+              case "Maritime":
+                cargaison = new Maritine(distance, produits);
+                break;
+              case "Aerienne":
+                cargaison = new Aerienne(distance, produits);
+                break;
+              default:
+                alert("Type de cargaison invalide");
+                return;
+            }
+
+            const valeurTotale = cargaison.sommeTotale(cargaison);
+            cargaisonManager.ajouterCargaison(cargaison);
+            afficherCargaisonDansDOM(
+              `Nouvelle cargaison ${type}`,
+              cargaison,
+              valeurTotale
+            );
+            mettreAJourCompteurs();
+            modalCargaison.style.display = "none";
+          } catch (error) {
+            alert(`Erreur: ${error.message}`);
+          }
+        });
+
+      // Fermer les modales en cliquant à l'extérieur
+      window.addEventListener("click", (e) => {
+        if (e.target === modalCargaison) {
+          modalCargaison.style.display = "none";
+        }
+        if (e.target === modalProduit) {
+          modalProduit.style.display = "none";
+        }
+      });
+
+      // Toggle sidebar
+      document.querySelector(".menu-toggle").addEventListener("click", () => {
+        document.querySelector(".sidebar").classList.toggle("sidebar-open");
+      });
+
+      // Initialisation
+      mettreAJourCompteurs();
+      mettreAJourListeProduits();
+    </script>
+  </body>
+</html>

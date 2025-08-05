@@ -15,6 +15,8 @@ export class CargaisonManager {
   }
 
   listerCargaisons(): Cargaison[] {
+    console.log(this.cargaisons);
+
     return this.cargaisons;
   }
 

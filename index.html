@@ -1,11 +1,142 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <title>Mini Projet TS</title>
   </head>
   <body>
-    <h1>Hello Cargaison</h1>
+    <h3></h3>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Infos Cargaisons</title>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        padding: 2rem;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+
+      .cargaison {
+        background: white;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .cargaison h2 {
+        margin-bottom: 0.5rem;
+        color: #007bff;
+      }
+
+      .produits {
+        padding-left: 1rem;
+      }
+
+      .produit {
+        margin-bottom: 0.5rem;
+      }
+
+      .erreur {
+        color: red;
+        font-weight: bold;
+      }
+    </style>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="logo">GP Cargaison</div>
+      <ul class="nav-links">
+        <li><a href="#">Accueil</a></li>
+        <li><a href="#">Produits</a></li>
+        <li><a href="#">Cargaisons</a></li>
+        <li><a href="#">Rapports</a></li>
+        <li><a href="#">Paramètres</a></li>
+      </ul>
+      <button class="menu-toggle" aria-label="Toggle menu">
+        <i class="bx bx-menu"></i>
+      </button>
+    </nav>
+    <aside class="sidebar">
+      <a href="#" class="active"
+        ><i class="bx bx-home"></i><span>Dashboard</span></a
+      >
+      <a href="#" id="open-add-product"
+        ><i class="bx bx-package"></i><span>Ajouter un produit</span></a
+      >
+      <a href="#" id="open-add-cargaison"
+        ><i class="bx bxs-truck"></i><span>Ajouter une cargaison</span></a
+      >
+      <a href="#"
+        ><i class="bx bx-bar-chart-alt-2"></i><span>Statistiques</span></a
+      >
+      <a href="#"><i class="bx bx-log-out"></i><span>Déconnexion</span></a>
+    </aside>
+    <main class="container">
+      <div class="dashboard-header">
+        <h1>GP Cargaison</h1>
+        <button class="btn btn-primary" id="run-tests">
+          Exécuter les tests
+        </button>
+      </div>
+
+      <div class="dashboard-cards">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Cargaisons routières</div>
+            <div class="card-icon blue">
+              <i class="bx bx-car"></i>
+            </div>
+          </div>
+          <div class="card-value" id="routiere-count">0</div>
+          <div class="card-footer">+0 cette semaine</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Cargaisons maritimes</div>
+            <div class="card-icon green">
+              <i class="bx bx-ship"></i>
+            </div>
+          </div>
+          <div class="card-value" id="maritime-count">0</div>
+          <div class="card-footer">+0 ce mois-ci</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Cargaisons aériennes</div>
+            <div class="card-icon orange">
+              <i class="bx bx-plane"></i>
+            </div>
+          </div>
+          <div class="card-value" id="aerienne-count">0</div>
+          <div class="card-footer">+0 aujourd'hui</div>
+        </div>
+      </div>
+
+      <div class="resultats-container">
+        <h2>Résultats des tests de cargaison</h2>
+        <div id="resultats"></div>
+      </div>
+    </main>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

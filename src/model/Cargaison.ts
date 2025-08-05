@@ -13,6 +13,9 @@ export abstract class Cargaison implements CargoProduitCalculorInterface {
     this.produits = produits;
   }
 
+  getDistance = (): number => this.distance;
+
+  getProduits = (): Produit[] => this.produits;
   // Méthodes abstraites à implémenter dans les sous-classes
   abstract calculerFrais<T extends Produit>(produit: T): number;
 
