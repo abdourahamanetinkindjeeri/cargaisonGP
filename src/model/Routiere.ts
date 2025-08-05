@@ -5,12 +5,15 @@ import { Fragile } from "./Fragile";
 import { Incassable } from "./Incassable";
 import { Produit } from "./Produit";
 
-class Routiere extends Cargaison {
+export class Routiere extends Cargaison {
   override calculerFrais<T extends Produit>(produit: T): number {
     const priceAlimentaire = 100;
-    const priceMaterial = 300;
+    const priceMaterial = 200;
+    let frais = 0;
+
     if (produit instanceof Alimentaire) {
-      return produit.getPoids() * this.distance * priceAlimentaire;
+      frais = 5000;
+      return produit.getPoids() * this.distance * priceAlimentaire + frais;
     }
 
     if (produit instanceof Chimique) {
@@ -20,7 +23,9 @@ class Routiere extends Cargaison {
     }
 
     if (produit instanceof Fragile || produit instanceof Incassable) {
-      return produit.getPoids() * this.distance * priceMaterial;
+      frais = 10000;
+
+      return produit.getPoids() * this.distance * priceMaterial + frais;
     }
 
     throw new Error("Type de produit non pris en charge");

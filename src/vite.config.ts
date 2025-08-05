@@ -1,9 +1,9 @@
-// @ts-ignore
-import { defineConfig } from "vite";
+// // @ts-ignore
+// import { defineConfig } from "vite";
 
-export default defineConfig({
-  root: ".",
-  build: {
-    outDir: "dist",
-  },
-});
+// export default defineConfig({
+//   root: ".",
+//   build: {
+//     outDir: "dist",
+//   },
+// });

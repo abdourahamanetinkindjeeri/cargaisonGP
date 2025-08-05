@@ -5,7 +5,7 @@ import { Fragile } from "./Fragile";
 import { Incassable } from "./Incassable";
 import { Produit } from "./Produit";
 
-class Aerienne extends Cargaison {
+export class Aerienne extends Cargaison {
   override calculerFrais<T extends Produit>(produit: T): number {
     const priceAlimentaire = 300;
     const priceMaterial = 100;
