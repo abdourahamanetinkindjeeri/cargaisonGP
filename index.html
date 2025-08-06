@@ -89,6 +89,62 @@
       <a href="#"><i class="bx bx-log-out"></i><span>Déconnexion</span></a>
     </aside>
     <main class="container">
+      <!-- POPUP AJOUT PRODUIT -->
+      <div id="popup-add-product" class="modal" style="display: none">
+        <div class="modal-content">
+          <span class="close" id="close-add-product">&times;</span>
+          <h2>Ajouter un produit</h2>
+          <form id="form-add-product">
+            <label for="nom-produit">Nom du produit</label>
+            <input type="text" id="nom-produit" name="nom" required />
+            <label for="poids-produit">Poids (kg)</label>
+            <input
+              type="number"
+              id="poids-produit"
+              name="poids"
+              min="0"
+              step="0.01"
+              required
+            />
+            <label for="type-produit">Type</label>
+            <select id="type-produit" name="type" required>
+              <option value="Alimentaire">Alimentaire</option>
+              <option value="Chimique">Chimique</option>
+              <option value="Fragile">Fragile</option>
+              <option value="Incassable">Incassable</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- POPUP AJOUT CARGAISON -->
+      <div id="popup-add-cargaison" class="modal" style="display: none">
+        <div class="modal-content">
+          <span class="close" id="close-add-cargaison">&times;</span>
+          <h2>Ajouter une cargaison</h2>
+          <form id="form-add-cargaison">
+            <label for="type-cargaison">Type</label>
+            <select id="type-cargaison" name="type" required>
+              <option value="Routiere">Routière</option>
+              <option value="Maritime">Maritime</option>
+              <option value="Aerienne">Aérienne</option>
+            </select>
+            <label for="distance-cargaison">Distance (km)</label>
+            <input
+              type="number"
+              id="distance-cargaison"
+              name="distance"
+              min="1"
+              required
+            />
+            <!-- <label for="date-cargaison">Date</label>
+            <input type="date" id="date-cargaison" name="date" required /> -->
+            <button type="submit" class="btn btn-primary">Ajouter</button>
+          </form>
+        </div>
+      </div>
+
       <div class="dashboard-header">
         <h1>GP Cargaison</h1>
         <button class="btn btn-primary" id="run-tests">
@@ -138,5 +194,60 @@
     </main>
 
     <script type="module" src="/src/main.ts"></script>
+    <style>
+      .modal {
+        display: flex;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: auto;
+        background: rgba(0, 0, 0, 0.4);
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-content {
+        background: #fff;
+        padding: 2rem 2.5rem;
+        border-radius: 8px;
+        min-width: 320px;
+        max-width: 90vw;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+        position: relative;
+      }
+      .modal-content h2 {
+        margin-top: 0;
+      }
+      .modal-content label {
+        display: block;
+        margin-top: 1rem;
+        margin-bottom: 0.3rem;
+      }
+      .modal-content input,
+      .modal-content select {
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .modal-content .btn {
+        margin-top: 1rem;
+        width: 100%;
+      }
+      .close {
+        position: absolute;
+        top: 0.7rem;
+        right: 1rem;
+        font-size: 2rem;
+        color: #888;
+        cursor: pointer;
+      }
+      .close:hover {
+        color: #007bff;
+      }
+    </style>
   </body>
 </html>

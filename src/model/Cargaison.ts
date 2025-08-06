@@ -2,12 +2,20 @@ import { CargoProduitCalculorInterface } from "./interfaces/CargoProduitCalculor
 import { Produit } from "./Produit";
 
 export abstract class Cargaison implements CargoProduitCalculorInterface {
+  public ajouterProduit(produit: Produit): void {
+    if (this.produits.length >= 10) {
+      throw new Error(
+        "Impossible d'ajouter plus de 10 produits à une cargaison."
+      );
+    }
+    this.produits.push(produit);
+  }
   protected distance: number;
   protected produits: Produit[];
 
   constructor(distance: number, produits: Produit[]) {
-    if (produits.length < 1 || produits.length > 10) {
-      throw new Error("La cargaison doit contenir entre 1 et 10 produits.");
+    if (produits.length > 10) {
+      throw new Error("La cargaison ne peut pas contenir plus de 10 produits.");
     }
     this.distance = distance;
     this.produits = produits;

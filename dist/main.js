@@ -1,11 +1,14 @@
+// === Buffer temporaire pour les produits à affecter à la prochaine cargaison ===
+let produitsBuffer = [];
+// === Imports ===
 import { Aerienne } from "./model/Aerienne";
 import { Alimentaire } from "./model/Alimentaire";
 import { Chimique } from "./model/Chimique";
 import { Fragile } from "./model/Fragile";
 import { Incassable } from "./model/Incassable";
-import { CargaisonManager } from "./model/managers/CargaisonManager";
 import { Maritine } from "./model/Maritime";
 import { Routiere } from "./model/Routiere";
+import { CargaisonManager } from "./model/managers/CargaisonManager";
 // === Données de test ===
 const produits10 = [
     new Alimentaire({ libelle: "Riz", poids: 5 }),
@@ -40,9 +43,9 @@ const produits8 = [
     new Fragile({ libelle: "Lampe en verre", poids: 2 }),
     new Incassable({ libelle: "Pince", poids: 0.7 }),
 ];
-// === CargaisonManager ===
+// === Manager ===
 const cargaisonManager = new CargaisonManager();
-// === Fonctions DOM ===
+// === Fonctions utilitaires ===
 function afficherCargaisonDansDOM(description, cargaison, valeurTotale) {
     const resultatsDiv = document.getElementById("resultats");
     const div = document.createElement("div");
@@ -71,7 +74,6 @@ function afficherErreurDansDOM(description, message) {
     div.innerHTML = `<h2>${description}</h2><p>${message}</p>`;
     resultatsDiv.appendChild(div);
 }
-// === Compteur par type ===
 function countTypeCargaison(type) {
     return cargaisonManager
         .listerCargaisons()
@@ -82,7 +84,7 @@ function mettreAJourCompteurs() {
     document.getElementById("maritime-count").textContent = String(countTypeCargaison("Maritine"));
     document.getElementById("aerienne-count").textContent = String(countTypeCargaison("Aerienne"));
 }
-// === Fonction principale ===
+// === Test dynamique ===
 function testCargaison(produits, description, CargaisonType) {
     try {
         const cargaison = new CargaisonType(300, produits);
@@ -95,15 +97,109 @@ function testCargaison(produits, description, CargaisonType) {
         afficherErreurDansDOM(description, e.message);
     }
 }
-// === Lancer les tests ===
-document.getElementById("run-tests")?.addEventListener("click", () => {
-    const resultatsDiv = document.getElementById("resultats");
-    if (resultatsDiv)
-        resultatsDiv.innerHTML = "";
-    cargaisonManager.reset();
-    testCargaison(produits10, "Test avec 10 produits valides", Routiere);
-    testCargaison([produits10[0]], "Test avec 1 produit valide", Routiere);
-    testCargaison(produits9, "Test avec 9 produits", Maritine);
-    testCargaison(produits8, "Test avec 8 produits", Aerienne);
-    testCargaison([...produits10, ...produits9], "Test avec 19 produits (doit échouer)", Aerienne);
+// === DOM Ready ===
+document.addEventListener("DOMContentLoaded", () => {
+    // === Sélecteurs ===
+    const popupAddProduct = document.getElementById("popup-add-product");
+    const popupAddCargaison = document.getElementById("popup-add-cargaison");
+    const openAddProductBtn = document.getElementById("open-add-product");
+    const openAddCargaisonBtn = document.getElementById("open-add-cargaison");
+    const closeAddProductBtn = document.getElementById("close-add-product");
+    const closeAddCargaisonBtn = document.getElementById("close-add-cargaison");
+    // === Popups ouverture/fermeture ===
+    openAddProductBtn.onclick = () => (popupAddProduct.style.display = "flex");
+    openAddCargaisonBtn.onclick = () => (popupAddCargaison.style.display = "flex");
+    closeAddProductBtn.onclick = () => (popupAddProduct.style.display = "none");
+    closeAddCargaisonBtn.onclick = () => (popupAddCargaison.style.display = "none");
+    [popupAddProduct, popupAddCargaison].forEach((popup) => {
+        popup.addEventListener("click", (e) => {
+            if (e.target === popup)
+                popup.style.display = "none";
+        });
+    });
+    // === Formulaire cargaison ===
+    const formAddCargaison = document.getElementById("form-add-cargaison");
+    formAddCargaison.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const distance = parseFloat(document.getElementById("distance-cargaison").value);
+        const type = document.getElementById("type-cargaison").value;
+        try {
+            let cargaison;
+            switch (type) {
+                case "Routiere":
+                    cargaison = new Routiere(distance, produitsBuffer);
+                    break;
+                case "Maritime":
+                    cargaison = new Maritine(distance, produitsBuffer);
+                    break;
+                case "Aerienne":
+                    cargaison = new Aerienne(distance, produitsBuffer);
+                    break;
+                default:
+                    throw new Error("Type de cargaison inconnu");
+            }
+            cargaisonManager.ajouterCargaison(cargaison);
+            const valeurTotale = cargaison.sommeTotale(cargaison);
+            afficherCargaisonDansDOM("Nouvelle cargaison ajoutée", cargaison, valeurTotale);
+            mettreAJourCompteurs();
+            produitsBuffer = [];
+            popupAddCargaison.style.display = "none";
+            formAddCargaison.reset();
+        }
+        catch (err) {
+            afficherErreurDansDOM("Erreur", err.message);
+        }
+    });
+    // === Formulaire produit ===
+    const formAddProduct = document.getElementById("form-add-product");
+    formAddProduct.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const nom = document.getElementById("nom-produit").value.trim();
+        const poids = parseFloat(document.getElementById("poids-produit").value);
+        const type = document.getElementById("type-produit")
+            .value;
+        try {
+            let produit;
+            switch (type) {
+                case "Alimentaire":
+                    produit = new Alimentaire({ libelle: nom, poids });
+                    break;
+                case "Chimique":
+                    produit = new Chimique({ libelle: nom, poids }, 1);
+                    break;
+                case "Fragile":
+                    produit = new Fragile({ libelle: nom, poids });
+                    break;
+                case "Incassable":
+                    produit = new Incassable({ libelle: nom, poids });
+                    break;
+                default:
+                    throw new Error("Type de produit inconnu");
+            }
+            produitsBuffer.push(produit);
+            afficherCargaisonDansDOM("Produit ajouté à la liste temporaire", {
+                ...cargaisonManager.listerCargaisons().slice(-1)[0],
+                getProduits: () => produitsBuffer,
+                getDistance: () => 0,
+                constructor: { name: "Buffer" },
+            }, 0);
+            popupAddProduct.style.display = "none";
+            formAddProduct.reset();
+        }
+        catch (err) {
+            afficherErreurDansDOM("Erreur", err.message);
+        }
+    });
+    // === Bouton test ===
+    document.getElementById("run-tests")?.addEventListener("click", () => {
+        const resultatsDiv = document.getElementById("resultats");
+        if (resultatsDiv)
+            resultatsDiv.innerHTML = "";
+        cargaisonManager.reset();
+        testCargaison(produits10, "Test avec 10 produits valides", Routiere);
+        testCargaison([produits10[0]], "Test avec 1 produit valide", Routiere);
+        testCargaison(produits9, "Test avec 9 produits", Maritine);
+        testCargaison(produits8, "Test avec 8 produits", Aerienne);
+        testCargaison([...produits10, ...produits9], "Test avec 19 produits (doit échouer)", Aerienne);
+    });
 });
